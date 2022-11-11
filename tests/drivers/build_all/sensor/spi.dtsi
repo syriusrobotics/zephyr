@@ -323,3 +323,27 @@ test_spi_bme680: bme680@3c {
 	reg = <0x3c>;
 	spi-max-frequency = <0>;
 };
+
+test_spi_bmi08x_accel: bmi08x@3d {
+	compatible = "bosch,bmi08x-accel";
+	reg = <0x3d>;
+	spi-max-frequency = <0>;
+	int-gpios = <&test_gpio 0 0>;
+	int1-map-io = <0x01>;
+	int2-map-io = <0x00>;
+	int1-io-conf = <0x0A>;
+	int2-io-conf = <0x17>;
+	accel-hz = "800";
+	accel-fs = <4>;
+};
+
+test_spi_bmi08x_gyro: bmi08x@3e {
+	compatible = "bosch,bmi08x-gyro";
+	reg = <0x3e>;
+	spi-max-frequency = <0>;
+	int-gpios = <&test_gpio 0 0>;
+	int3-4-map-io = <0x01>;
+	int3-4-io-conf = <0x01>;
+	gyro-hz = "1000_116";
+	gyro-fs = <1000>;
+};
