@@ -165,6 +165,7 @@ class Sign(Forceable):
             formats.append('bin')
 
         hex_exists = build_conf.getboolean('CONFIG_BUILD_OUTPUT_HEX')
+
         if args.gen_hex:
             self.check_force(hex_exists,
                              '--hex given but CONFIG_BUILD_OUTPUT_HEX not set '
@@ -247,13 +248,20 @@ class ImgtoolSigner(Signer):
             log.inf('partition size: {0} (0x{0:x})'.format(size))
             log.inf('rom start offset: {0} (0x{0:x})'.format(vtoff))
 
+        cache = CMakeCache.from_build_dir(build_dir)
+        major = str(cache.get('CMAKE_PROJECT_VERSION_MAJOR', 0))
+        minor = str(cache.get('CMAKE_PROJECT_VERSION_MINOR', 0))
+        patch = str(cache.get('CMAKE_PROJECT_VERSION_PATCH', 0))
+        tweak = cache.get('CMAKE_PROJECT_VERSION_TWEAK', "")
+        tweak = str(os.environ.get('BUILD_NUMBER', 0) if tweak == "" else tweak)
+
         # Base sign command.
         #
         # We provide a default --version in case the user is just
         # messing around and doesn't want to set one. It will be
         # overridden if there is a --version in args.tool_args.
         sign_base = imgtool + ['sign',
-                               '--version', '0.0.0+0',
+                               '--version', (major + '.' + minor + '.' + patch + '+' + tweak),
                                '--align', str(align),
                                '--header-size', str(vtoff),
                                '--slot-size', str(size)]
